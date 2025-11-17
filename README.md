@@ -9,11 +9,11 @@
 </p>
 
 <p align="center">
-  <img src="assets/netscoutxbanner.jpg" alt="NetScoutX banner" width="480" />
+  <img src="assets/netscoutxbanner.jpeg" alt="NetScoutX banner" width="480" />
 </p>
 
 ```
-_   _      _   ____                  _  __  __
+  _   _      _   ____                  _   __  __
  | \ | | ___| |_/ ___|  ___ ___  _   _| |_ \ \/ /
  |  \| |/ _ \ __\___ \ / __/ _ \| | | | __| \  / 
  | |\  |  __/ |_ ___) | (_| (_) | |_| | |_ /  \ 
