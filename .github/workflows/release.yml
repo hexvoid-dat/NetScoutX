@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-and-release:
+    name: Build & upload binaries
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            os_slug: linux-amd64
+            ext: ""
+          - os: macos-latest
+            os_slug: darwin-amd64
+            ext: ""
+          - os: windows-latest
+            os_slug: windows-amd64
+            ext: ".exe"
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Build binaries
+        run: |
+          mkdir -p dist
+          go build -v -o dist/netscoutx-${{ matrix.os_slug }}${{ matrix.ext }} ./cmd/net-scout
+          go build -v -o dist/netscoutx-cli-${{ matrix.os_slug }}${{ matrix.ext }} ./cmd/net-scout-cli
+
+      - name: Upload binaries to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
