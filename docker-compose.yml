@@ -1,0 +1,44 @@
+# Definiujemy izolowaną sieć dla naszego środowiska testowego.
+networks:
+  netscout_test_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
+
+services:
+  # 1. Serwer FTP z backdoorem (vsftpd 2.3.4)
+  # Oczekiwane znalezisko: CVE-2011-2523 na porcie 21
+  ftp_with_backdoor:
+    image: "fauria/vsftpd"
+    container_name: ftp_backdoor
+    networks:
+      netscout_test_net:
+        ipv4_address: 172.28.0.10
+    restart: unless-stopped
+    ports:
+      - "21:21"
+
+  # 2. Serwer SSH z podatnością na enumerację użytkowników
+  # Oczekiwane znalezisko: CVE-2018-15473 na porcie 22
+  ssh_vulnerable:
+    image: "rastasheep/ubuntu-sshd:16.04"
+    container_name: ssh_vulnerable
+    networks:
+      netscout_test_net:
+        ipv4_address: 172.28.0.20
+    restart: unless-stopped
+    ports:
+      - "22:22"
+
+  # 3. Serwer Apache z podatnością Path Traversal
+  # Oczekiwane znalezisko: CVE-2018-1312 na porcie 80
+  apache_vulnerable:
+    image: "httpd:2.4.29" # Ta wersja jest podatna
+    container_name: apache_vulnerable
+    networks:
+      netscout_test_net:
+        ipv4_address: 172.28.0.30
+    restart: unless-stopped
+    ports:
+      - "80:80"
